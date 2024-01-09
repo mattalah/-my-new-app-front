@@ -3,10 +3,12 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+
 use Illuminate\Contracts\Validation\Validator;
+
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreUserRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,6 +28,7 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'id' => 'required|numeric',
             'name' => 'required|string',
             'photoUrls' => 'required|array',
             'tags' => 'sometimes|array',
@@ -33,12 +36,13 @@ class StoreUserRequest extends FormRequest
             'tags.*.name' => 'required|string',
             'category.id' =>  'sometimes|numeric',
             'category.name' =>  'sometimes|string',
-            "photoUrls.*"  => 'sometimes|string|distinct',
+            'photoUrls.*'  => 'sometimes|string|distinct',
             'status' => 'sometimes|in:available, pending,sold'
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(response()->json('Invalid input', 405));
+        throw new HttpResponseException(response()->json('Validation exception', 405));
     }
 }

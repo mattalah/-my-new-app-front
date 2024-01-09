@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\User\{IndexUserRequest, StoreUserRequest, UpdateUserRequest};
+use App\Http\Requests\User\UpdateNewsParamRequest;
+use App\Http\Requests\User\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 
@@ -15,70 +16,6 @@ use App\Models\User;
 class UserController extends AppBaseController
 {
 
-    /**
-     * @OA\Get(
-     *     path="/user/{id}",
-     *     tags={"user"},
-     *     summary="Get user by user name",
-     *     operationId="getUserByName",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/UserResource"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid id supplied"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="User not found"
-     *     ),
-     * )
-     */
-    public function indexByStatus(IndexUserRequest $request)
-    {
-        $input = $request->validated();
-        return response()->json(UserResource::collection(User::where('status', $input['status'])->get()));
-    }
-
-    /**
-     * @OA\Post(
-     *     path="/user",
-     *     tags={"user"},
-     *     summary="Create user",
-     *     description="This can only be done by the logged in user.",
-     *     operationId="createUser",
-     *     @OA\Response(
-     *         response="default",
-     *         description="successful operation"
-     *     ),
-     *     @OA\RequestBody(
-     *         description="Create user object",
-     *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/UserResource")
-     *     )
-     * )
-     */
-    public function store(StoreUserRequest $request)
-    {
-        $input = $request->validated();
-        $user = User::create([
-            'name' => $input['name'],
-            'status' => $input['status'],
-            'photoUrls' => json_encode($input['photoUrls']),
-        ]);
-        $user->save();
-        return response()->json(new UserResource($user));
-    }
 
     /**
      * @OA\Put(
@@ -111,7 +48,7 @@ class UserController extends AppBaseController
      *     )
      * )
      */
-    public function update(UpdateUserRequest $request)
+    public function updateProfile(updateProfileRequest $request)
     {
         $input = $request->validated();
         if (!User::where('id', $input['id'])->exist()) {
@@ -120,45 +57,23 @@ class UserController extends AppBaseController
         $user = User::where('id', $input['id'])->first();
         $user->update([
             'name' => $input['name'],
-            'status' => $input['status'],
-            'photoUrls' => json_encode($input['photoUrls']),
         ]);
         $user->save();
         return  response()->json(new UserResource($user));
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/user/{id}",
-     *     summary="Delete user",
-     *     tags={"user"},
-     *     description="This can only be done by the logged in user.",
-     *     operationId="deleteUser",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="The name that needs to be deleted",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="string"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid id supplied",
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="User not found",
-     *     )
-     * )
-     */
-    public function destroy(int $userId)
+    public function show(User $user)
     {
-        if (User::where('id', $userId)->doesntExist()) {
-            return  response()->json('User not found', 404);
-        }
-        User::where('id', $userId)->delete();
-        return response()->json('deleted done');
+        return  response()->json(new UserResource($user));
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateNewsParam(UpdateNewsParamRequest $request)
+    {
+        dd($request);
+        return null;
     }
 }
