@@ -5,3 +5,4 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/profile/{user}', [UserController::class, 'show'])->name('profile');
+Route::get('/param/{user}', [UserController::class, 'showNewsParam'])->name('show-news-param');
