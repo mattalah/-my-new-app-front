@@ -145,11 +145,11 @@ class AuthController extends AppBaseController
      */
     public function register(AuthRegisterRequest $request)
     {
-        $input = $request->validated();
+        // $input = $request->validated();
         $user = User::create([
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'password' => bcrypt($input['password'])
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password'])
         ]);
 
         return $this->sendResponse(new UserResource($user), __('auth.verification.registered_account'));
