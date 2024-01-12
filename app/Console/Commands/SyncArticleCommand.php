@@ -3,10 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use jcobhams\NewsApi\NewsApi;
 use App\Services\ArticleService;
-use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\NewsController;
 
 class SyncArticleCommand extends Command
 {
@@ -32,7 +29,7 @@ class SyncArticleCommand extends Command
     protected $categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"];
 
 
-    public function __construct(private ArticleService $ArticleService, private NewsController $NewsController)
+    public function __construct(private ArticleService $ArticleService)
     {
         parent::__construct();
     }
