@@ -48,7 +48,6 @@ class SyncArticleCommand extends Command
         collect($this->categories)->map(function (string $category, int $key) use ($progressbar) {
             $this->ArticleService->store($this->ArticleService->changeArticleFormat($this->ArticleService->getArticles($category), $category));
             $progressbar->advance();
-            return null;
         });
         $progressbar->finish();
 
