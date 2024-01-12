@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreArticleRequest;
-use App\Http\Requests\UpdateArticleRequest;
+use App\Http\Requests\Article\IndexRequest;
+use App\Http\Resources\ArticleCollection;
 use App\Models\Article;
 
 class ArticleController extends Controller
@@ -11,9 +11,12 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexRequest $request)
     {
-        return Article::all();
+        $data = Article::search($request->search, $request->filter)->paginate();
+        return new ArticleCollection($data);
+        // 'author',
+        // 'category',
+        // 'source',
     }
-
 }

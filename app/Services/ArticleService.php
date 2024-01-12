@@ -34,6 +34,6 @@ class ArticleService
 
     public function store($articles)
     {
-        return Article::insert($articles->toArray());
+        Article::insert($articles->toArray());
     }
 }

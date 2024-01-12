@@ -28,21 +28,8 @@ class UpdateProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|numeric',
             'name' => 'required|string',
-            'photoUrls' => 'required|array',
-            'tags' => 'sometimes|array',
-            'tags.*.id' => 'required|numeric',
-            'tags.*.name' => 'required|string',
-            'category.id' =>  'sometimes|numeric',
-            'category.name' =>  'sometimes|string',
-            'photoUrls.*'  => 'sometimes|string|distinct',
-            'status' => 'sometimes|in:available, pending,sold'
         ];
     }
 
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json('Validation exception', 405));
-    }
 }
