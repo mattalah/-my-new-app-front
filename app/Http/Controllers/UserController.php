@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\User\UpdateNewsParamRequest;
-use App\Http\Requests\User\UpdateProfileRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Requests\User\{UpdateProfileRequest, UpdateNewsParamRequest, ShowNewsParamRequest, ShowProfile};
+use App\Http\Resources\{UserResource, UserParamResource};
 use App\Models\User;
 
 /**
@@ -48,32 +47,33 @@ class UserController extends AppBaseController
      *     )
      * )
      */
-    public function updateProfile(updateProfileRequest $request)
+    public function updateProfile(updateProfileRequest $request, User $user)
     {
-        $input = $request->validated();
-        if (!User::where('id', $input['id'])->exist()) {
-            return  response()->json('User not found', 404);
-        }
-        $user = User::where('id', $input['id'])->first();
-        $user->update([
-            'name' => $input['name'],
-        ]);
+        $user->update($request->only(['name']));
         $user->save();
-        return  response()->json(new UserResource($user));
+        return $this->sendResponse(new UserResource($user), __('user.profile.updated_profile'));
     }
 
-    public function show(User $user)
+    public function showProfile(ShowProfile $request, User $user)
     {
-        return  response()->json(new UserResource($user));
+        return $this->sendResponse(new UserResource($user), __('user.profile.show_profile'));
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function updateNewsParam(UpdateNewsParamRequest $request)
+    public function updateNewsParam(UpdateNewsParamRequest $request, User $user)
     {
-        dd($request);
-        return null;
+        $user->update($request->only(['source','category','publishedAt']));
+        $user->save();
+        return $this->sendResponse(new UserParamResource($user), __('user.news_param.update'));
+    }
+    /**
+     * get the specified resource in storage.
+     */
+    public function showNewsParam(ShowNewsParamRequest $request, User $user)
+    {
+        return $this->sendResponse(new UserParamResource($user), __('user.news_param.show'));
     }
 }
