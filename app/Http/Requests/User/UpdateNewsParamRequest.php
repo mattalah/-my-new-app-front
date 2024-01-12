@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\User;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateNewsParamRequest extends FormRequest
@@ -11,7 +12,7 @@ class UpdateNewsParamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('update', $this->user);
     }
 
     /**
@@ -22,7 +23,9 @@ class UpdateNewsParamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'publishedAt' => 'string',
+            'category' => 'string',
+            'source' => 'string',
         ];
     }
 }
